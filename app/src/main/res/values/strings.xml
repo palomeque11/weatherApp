@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="zip_code">Zip code</string>
+    <string name="temp_format">%1$s °</string>
+    <string-array name="spinnerData">
+        <item>Fahrenheit</item>
+        <item>Celsius</item>
+    </string-array>
+</resources>
