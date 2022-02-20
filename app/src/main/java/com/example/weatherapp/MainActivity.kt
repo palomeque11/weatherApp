@@ -1,9 +1,7 @@
 package com.example.weatherapp
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.viewpagertest.model.remote.LIMIT_TEMP
@@ -18,15 +16,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-const val ZIPCODE = "ZIPCODE"
-const val DEGREES_CONST = "DEGREES"
+
+val viewModel: WeatherViewModel by lazy {
+    WeatherViewModel()
+}
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: WeatherViewModel by lazy {
-        WeatherViewModel()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
-        with(intent) {
-            putExtra(ZIPCODE, viewModel.zipCode)
-            putExtra(DEGREES_CONST, viewModel.degrees)
-            startActivityForResult(intent, 1)
-        }
+        startActivity(intent)
     }
 
     override fun onStart() {
@@ -77,7 +69,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        Log.d("TAG", "onResponse: ${response.raw().request().url()}")
                         updateAdapter(it)
                     }
                 }
@@ -129,14 +120,6 @@ class MainActivity : AppCompatActivity() {
     fun updateAdapter(dataSet: HourlyResponse) {
         binding.dailyResults.layoutManager = GridLayoutManager(this, 1)
         binding.dailyResults.adapter = DailyAdapter(dataSet)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && data != null) {
-            viewModel.setZipCode(data.getIntExtra(ZIPCODE, 0))
-            data.getParcelableExtra<Degrees>(DEGREES_CONST)?.let { viewModel.setDegree(it) }
-        }
     }
 
 }
